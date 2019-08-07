@@ -1,0 +1,18 @@
+{
+    "name": "shukriadams-node-exec",
+    "version": "0.0.1",
+    "description": "public library of cross-os spawn and other process runners. Not intended for npm.js",
+    "private": false,
+    "author": "shukri.adams@gmail.com",
+    "license": "MIT",
+    "repository": {
+        "type" : "git",
+        "url" : "https://github.com/shukriadams/node-exec.git"
+    },
+    "dependencies": {
+        "custom-env": "1.0.0",
+        "cross-spawn": "6.0.5"
+    },
+
+    "devDependencies": {}
+}
