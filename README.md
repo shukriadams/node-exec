@@ -5,7 +5,7 @@ Add to package.json :
     {
         {
             "dependencies": {
-                "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.1"
+                "madscience-node-exec": "https://github.com/shukriadams/node-exec.git#0.0.2"
         }
     }
 
