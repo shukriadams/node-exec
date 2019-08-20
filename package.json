@@ -1,6 +1,6 @@
 {
-    "name": "shukriadams-node-exec",
-    "version": "0.0.1",
+    "name": "madscience-node-exec",
+    "version": "0.0.2",
     "description": "public library of cross-os spawn and other process runners. Not intended for npm.js",
     "private": false,
     "author": "shukri.adams@gmail.com",
