@@ -7,6 +7,7 @@ let spawn = require('cross-spawn'),
  *     cmd : main command to run.
  *     args : array or space-delimited string of arguments to run cmd with 
  *     options : object of options to pass directly to spawn.
+ *     failOnStderr : bool. True if stderr output will be treated as errors. True by default.
  *     verbose : bool, true if results should be written to console
  * }
  */
@@ -15,7 +16,9 @@ module.exports = async function (options){
 
         options.cwd = options.cwd || process.cwd();
         options.args = options.args || [];
-
+        if (options.failOnStderr === undefined)
+            options.failOnStderr = true;
+        
         if (typeof options.args === 'string')
             options.args = options.args.split(' ');
 
@@ -42,7 +45,7 @@ module.exports = async function (options){
         });
         
         child.on('close', function (code) {
-            if (error.length)
+            if (options.failOnStderr && error.length)
                 return reject(error);
 
             resolve( {
