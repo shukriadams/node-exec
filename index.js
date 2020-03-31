@@ -1,2 +1,6 @@
-let spawn = require('./spawn');
-module.exports = spawn;
+let spawn = require('./spawn'),
+    sh = require('./sh');
+    
+module.exports = {
+    spawn, sh
+};
