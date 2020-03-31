@@ -8,6 +8,9 @@ let spawn = require('cross-spawn'),
  *     args : array or space-delimited string of arguments to run cmd with 
  *     options : object of options to pass directly to spawn.
  *     failOnStderr : bool. True if stderr output will be treated as errors. True by default.
+ *     onEnd : optional callback for when process exits (both pass and fail)
+ *     onStdout : optional callback for when stdout receives data
+ *     onStderr : optional callback when the stderr receives data
  *     verbose : bool, true if results should be written to console
  * }
  */
@@ -27,31 +30,52 @@ module.exports = async function (options){
             child = spawn(options.cmd, options.args, options);
 
         child.stdout.on('data', function (data) {
+            data = data.toString('utf8');
             if (options.verbose)
-                console.log(data.toString('utf8'));
+                console.log(data);
 
-            result += data.toString('utf8');
+            if (options.onStdout)
+                options.onStdout(data);
+
+            result += data;
         });
             
         child.stderr.on('data', function (data) {
-            if (options.verbose)
-                console.log(data.toString('utf8'));
+            data = data.toString('utf8');
 
-            error += data.toString('utf8');
+            if (options.verbose)
+                console.log(data);
+
+            if (options.onStderr)
+                options.onStderr(data);
+
+            error += data;
         });
     
         child.on('error', function (err) {
+            if(options.onEnd) 
+                options.onEnd(out);
+
             return reject(err);
         });
         
         child.on('close', function (code) {
-            if (options.failOnStderr && error.length)
-                return reject(error);
+            if (options.failOnStderr && error.length){
+                if(options.onEnd) 
+                    options.onEnd(out);
 
-            resolve( {
+                return reject(error);
+            }
+
+            const out = {
                 code : code,
                 result : result
-            });
+            };
+
+            if(options.onEnd) 
+                options.onEnd(out);
+
+            resolve(out);
         });
     })
 }  
