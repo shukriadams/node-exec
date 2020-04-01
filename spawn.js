@@ -54,21 +54,31 @@ module.exports = async function (options){
     
         child.on('error', function (err) {
             if(options.onEnd) 
-                options.onEnd(out);
+                options.onEnd({
+                    code : 1,
+                    passed: false,
+                    result: err
+                });
 
             return reject(err);
         });
         
         child.on('close', function (code) {
+
             if (options.failOnStderr && error.length){
                 if(options.onEnd) 
-                    options.onEnd(out);
+                    options.onEnd({
+                        code,
+                        passed: false,
+                        result : error 
+                    });
 
                 return reject(error);
             }
 
             const out = {
                 code : code,
+                passed: true,
                 result : result
             };
 
