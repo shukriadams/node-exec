@@ -29,6 +29,11 @@ module.exports = async function (options){
             error = '',
             child = spawn(options.cmd, options.args, options);
 
+        if (options.onStart)
+            options.onStart({
+                pid : child.pid
+            });
+
         child.stdout.on('data', function (data) {
             data = data.toString('utf8');
             if (options.verbose)
