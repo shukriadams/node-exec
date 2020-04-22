@@ -1,4 +1,5 @@
-let spawn = require('cross-spawn'),
+const 
+    spawn = require('cross-spawn'),
     process = require('process');
 
 /**
@@ -34,28 +35,32 @@ module.exports = async function (options){
                 pid : child.pid
             });
 
-        child.stdout.on('data', function (data) {
-            data = data.toString('utf8');
-            if (options.verbose)
-                console.log(data);
+        // child will not have stdout if redirecting srtout
+        if (child.stdout)
+            child.stdout.on('data', function (data) {
+                data = data.toString('utf8');
+                if (options.verbose)
+                    console.log(data);
 
-            if (options.onStdout)
-                options.onStdout(data);
+                if (options.onStdout)
+                    options.onStdout(data);
 
-            result += data;
-        });
-            
-        child.stderr.on('data', function (data) {
-            data = data.toString('utf8');
+                result += data;
+            });
 
-            if (options.verbose)
-                console.log(data);
+        // child will not have stderr if redirecting stderr
+        if (child.stderr)
+            child.stderr.on('data', function (data) {
+                data = data.toString('utf8');
 
-            if (options.onStderr)
-                options.onStderr(data);
+                if (options.verbose)
+                    console.log(data);
 
-            error += data;
-        });
+                if (options.onStderr)
+                    options.onStderr(data);
+
+                error += data;
+            });
     
         child.on('error', function (err) {
             if(options.onEnd) 
@@ -69,7 +74,6 @@ module.exports = async function (options){
         });
         
         child.on('close', function (code) {
-
             if (options.failOnStderr && error.length){
                 if(options.onEnd) 
                     options.onEnd({
