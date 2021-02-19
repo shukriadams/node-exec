@@ -44,8 +44,10 @@ module.exports = async function (options){
 
                 if (options.onStdout)
                     options.onStdout(data);
-
-                result += data;
+                
+                // prevent strings from overflowing
+                if (result.length + data.length < 268435440)
+                    result += data
             });
 
         // child will not have stderr if redirecting stderr
@@ -59,7 +61,9 @@ module.exports = async function (options){
                 if (options.onStderr)
                     options.onStderr(data);
 
-                error += data;
+                // prevent strings from overflowing
+                if (error.length + data.length < 268435440)
+                    error += data
             });
     
         child.on('error', function (err) {
